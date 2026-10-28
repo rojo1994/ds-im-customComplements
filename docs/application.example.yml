@@ -1,0 +1,24 @@
+# Ejemplo de src/main/resources/application.yml (no se versiona).
+
+server:
+  servlet:
+    context-path: /ds/im/custom-complements/api
+
+spring:
+  application:
+    name: ds-im-customComplements
+
+app:
+  allowedOrigins: http://localhost:5000,https://importacion-dev.coppel.io
+  allowedMethods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  allowedHeaders: "*"
+  errors:
+    # true sólo en desarrollo: expone el detalle técnico en meta.devMessage.
+    include-dev-message: false
+  custom-complements:
+    # ps-im-customComplements con su context-path.
+    ps-url: https://importacion-dev.coppel.io/ps/im/custom-complements/api
+    # "Hoy" de las validaciones de fechas (imagen de marca, avisos, NOM).
+    time-zone: America/Tijuana
+    # Tiempo máximo de cada llamada a ps (snapshot y commit ejecutan varios SP).
+    read-timeout: 300s
