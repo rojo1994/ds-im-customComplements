@@ -193,33 +193,33 @@ final class DetailRules {
         ElectricalDTO adapterOut = row.hasComponents() && row.hasAdapter() ? row.adapterOutput() : ElectricalDTO.EMPTY;
         ElectricalDTO remote = row.hasComponents() && row.hasRemoteControl() ? row.remoteControl() : ElectricalDTO.EMPTY;
         if (row.hasComponents() && row.hasAdapter()) {
-            require(!blank(adapterIn.volts()), "Favor de capturar el Voltaje de entrada del adaptador");
-            require(!blank(adapterOut.volts()), "Favor de capturar el Voltaje de salida del adaptador");
-            require(!blank(adapterIn.watts()), "Favor de capturar los Watts de entrada del adaptador");
-            require(!blank(adapterOut.watts()), "Favor de capturar los Watts de salida del adaptador");
-            require(!blank(adapterIn.hertz()), "Favor de capturar los Hertz de entrada del adaptador");
-            require(!blank(adapterOut.hertz()), "Favor de capturar los Hertz de slida del adaptador");
-            require(!blank(adapterIn.amperes()), "Favor de capturar los Amperes de entrada del adaptador");
-            require(!blank(adapterOut.amperes()), "Favor de capturar los Amperes de salida del adaptador");
-            require(!blank(adapterIn.megaAmperes()), "Favor de capturar los MegaAmperes de entrada del adaptador");
-            require(!blank(adapterOut.megaAmperes()), "Favor de capturar los MegaAmperes de salida del adaptador");
-            require(!blank(adapterIn.directCurrent()), "Favor de capturar la Corriente Directa de entrada del adaptador");
-            require(!blank(adapterOut.directCurrent()), "Favor de capturar la Corriente Directa de salida del adaptador");
+            require(!blank(adapterIn.volts()), "Favor de capturar el voltaje de entrada del adaptador.");
+            require(!blank(adapterOut.volts()), "Favor de capturar el voltaje de salida del adaptador.");
+            require(!blank(adapterIn.watts()), "Favor de capturar los watts de entrada del adaptador.");
+            require(!blank(adapterOut.watts()), "Favor de capturar los watts de salida del adaptador.");
+            require(!blank(adapterIn.hertz()), "Favor de capturar los hertz de entrada del adaptador.");
+            require(!blank(adapterOut.hertz()), "Favor de capturar los hertz de salida del adaptador.");
+            require(!blank(adapterIn.amperes()), "Favor de capturar los amperes de entrada del adaptador.");
+            require(!blank(adapterOut.amperes()), "Favor de capturar los amperes de salida del adaptador.");
+            require(!blank(adapterIn.megaAmperes()), "Favor de capturar los megaamperes de entrada del adaptador.");
+            require(!blank(adapterOut.megaAmperes()), "Favor de capturar los megaamperes de salida del adaptador.");
+            require(!blank(adapterIn.directCurrent()), "Favor de capturar la corriente directa de entrada del adaptador.");
+            require(!blank(adapterOut.directCurrent()), "Favor de capturar la corriente directa de salida del adaptador.");
         }
         if (row.hasComponents() && row.hasRemoteControl()) {
-            require(!blank(remote.directCurrent()), "Favor de capturar la Corriente Directa del control remoto");
-            require(!blank(remote.batteries()), "Favor de capturar la cantidad de pilas del control remoto");
-            require(!blank(remote.batteryType()), "Favor de capturar el tipo de pilas del control remoto");
-            require(!blank(remote.batteryVoltage()), "Favor de capturar el voltaje de pilas del control remoto");
+            require(!blank(remote.directCurrent()), "Favor de capturar la corriente directa del control remoto.");
+            require(!blank(remote.batteries()), "Favor de capturar la cantidad de pilas del control remoto.");
+            require(!blank(remote.batteryType()), "Favor de capturar el tipo de pilas del control remoto.");
+            require(!blank(remote.batteryVoltage()), "Favor de capturar el voltaje de pilas del control remoto.");
         }
         if (row.hasEnergyConsumption()) {
-            require(row.consumptionUnitId() > 0, "Favor de seleccionar la unidad del consumo energético");
-            require(!emptyQuantity(row.consumptionQuantity()), "Favor de capturar la cantidad del consumo energético");
-            require(row.standbyUnitId() > 0, "Favor de seleccionar la unidad del consumo energético en espera");
+            require(row.consumptionUnitId() > 0, "Favor de seleccionar la unidad del consumo energético.");
+            require(!emptyQuantity(row.consumptionQuantity()), "Favor de capturar la cantidad del consumo energético.");
+            require(row.standbyUnitId() > 0, "Favor de seleccionar la unidad del consumo energético en espera.");
             require(!emptyQuantity(row.standbyQuantity()),
-                "Favor de capturar la cantidad del consumo energético en espera");
-            require(row.consumedUnitId() > 0, "Favor de seleccionar la unidad de energía consumida");
-            require(!emptyQuantity(row.consumedQuantity()), "Favor de capturar la cantidad de energía consumida");
+                "Favor de capturar la cantidad del consumo energético en espera.");
+            require(row.consumedUnitId() > 0, "Favor de seleccionar la unidad de energía consumida.");
+            require(!emptyQuantity(row.consumedQuantity()), "Favor de capturar la cantidad de energía consumida.");
         }
         ElectricalDTO product = row.hasComponents() ? productWithBatteries(row.product()) : ElectricalDTO.EMPTY;
         return new SpecificationRowDTO(row.piece(), row.sizeRange(), row.hasComponents(),
