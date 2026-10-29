@@ -87,7 +87,7 @@ class DetailRulesTest {
         assertThat(result.rows().get(2).exceptionId()).isEqualTo(4);
         assertThat(result.message())
             .startsWith("El aviso sanitario está vencido para las siguientes aduanas: TIJUANA.")
-            .contains("Está por vencer la vigencia del Aviso Sanitario para las siguientes aduanas: MEXICALI - 5 días.");
+            .contains("Está por vencer la vigencia del aviso sanitario para las siguientes aduanas: MEXICALI - 5 días.");
     }
 
     @Test
