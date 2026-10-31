@@ -2,7 +2,8 @@
 
 API de **negocio** de Complementos aduana (migración de `MxTrf010-complementos-aduana`, `MXTRF010.DLL`). Contiene
 las reglas que vivían en `FrmComplementosAduanales`, sus subformularios, los ViewModels y los DAL, con los mismos
-mensajes de los `MessageBox`, y persiste a través de `ps-im-customComplements`. Lo consume
+mensajes de los `MessageBox`, y persiste a través de `ps-im-customComplements`; la copia a Central Muebles / Central
+Ropa la graba con `ps-tms-fmd-inventarios-centrales` (reenvía el header `Authorization`). Lo consume
 `im-spa-custom-complements`.
 
 Java 25 · Spring Boot 4.1.1 · `spring-boot-starter-restclient` (RestClient + interfaz `@HttpExchange`) · springdoc 3 ·
@@ -17,12 +18,13 @@ com.coppel
 ├── services/customcomplements       interfaces + impl
 │   └── impl                         CustomsRules · DetailRules · SessionRules · SaveRules (reglas puras, con pruebas)
 │                                    FractionRulesResolver · ExpirationChecker
-├── client/customcomplements         CustomComplementsPsClient (@HttpExchange), PsClientErrorHandler, records de ps
+├── client/customcomplements         CustomComplementsPsClient e InventoryCentersClient (@HttpExchange),
+│                                    PsClientErrorHandler, records de ps
 ├── dto
 │   ├── customcomplements            renglones de aduanas, tallas, regulaciones, especificaciones e IEPS (front ↔ ds ↔ ps)
 │   ├── request/customcomplements    records de entrada (validados)
 │   └── response/customcomplements   records de salida
-├── config                           JacksonConfig, PsClientConfig, propiedades
+├── config                           JacksonConfig, PsClientConfig, InventoryCentersClientConfig, propiedades
 ├── constants/customcomplements      AppMessages (textos del escritorio), CustomsArea, ExpirationDocument, …
 ├── exceptions/customcomplements     ComplementsExceptionHandler + excepciones (400, 404, 409, 502)
 └── aspects/customcomplements        ComplementsLoggingAspect

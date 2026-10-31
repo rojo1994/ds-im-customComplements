@@ -8,7 +8,6 @@ import com.coppel.client.customcomplements.dto.CatalogItemDTO;
 import com.coppel.client.customcomplements.dto.CauseChangeDTO;
 import com.coppel.client.customcomplements.dto.CauseRequest;
 import com.coppel.client.customcomplements.dto.CentralDataDTO;
-import com.coppel.client.customcomplements.dto.CentralSaveRequest;
 import com.coppel.client.customcomplements.dto.CodeGeneralDTO;
 import com.coppel.client.customcomplements.dto.ExistsDTO;
 import com.coppel.client.customcomplements.dto.ExpirationCheckRequest;
@@ -198,8 +197,4 @@ public interface CustomComplementsPsClient {
     @PostExchange("/workspaces/{area}/{code}/commit")
     ApiResponseDTO<Void> commit(@PathVariable CustomsArea area, @PathVariable int code,
                                 @RequestBody WorkspaceCommitRequest request);
-
-    @PostExchange("/central/{area}/{code}")
-    ApiResponseDTO<Void> saveCentral(@PathVariable CustomsArea area, @PathVariable int code,
-                                     @RequestBody CentralSaveRequest request);
 }

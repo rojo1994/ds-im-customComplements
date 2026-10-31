@@ -1,6 +1,7 @@
 package com.coppel.services.customcomplements.impl;
 
 import com.coppel.client.customcomplements.CustomComplementsPsClient;
+import com.coppel.client.customcomplements.InventoryCentersClient;
 import com.coppel.client.customcomplements.dto.CentralDataDTO;
 import com.coppel.client.customcomplements.dto.ImpiRequest;
 import com.coppel.client.customcomplements.dto.LockRequest;
@@ -34,13 +35,15 @@ import static com.coppel.client.customcomplements.PsResponses.data;
 
 /**
  * Guardar con el orden del escritorio: validar → costos → grabarcomplementos (commit en ps) → borrar IMPI si cambió
- * la marca o alguna fracción → obtenerdatoscomplementos → servidor central → soltar el código.
+ * la marca o alguna fracción → obtenerdatoscomplementos → servidor central (ps-tms-fmd-inventarios-centrales) →
+ * soltar el código.
  */
 @Service
 @RequiredArgsConstructor
 public class ComplementsServiceImpl implements ComplementsService {
 
     private final CustomComplementsPsClient psClient;
+    private final InventoryCentersClient centersClient;
     private final FractionRulesResolver fractionRules;
     private final ExpirationChecker expirationChecker;
     private final Clock clock;
@@ -112,7 +115,10 @@ public class ComplementsServiceImpl implements ComplementsService {
         }
     }
 
-    /** Antes ObtenerDatosCentral + GrabarCentral con el mensaje de cada servidor. */
+    /**
+     * Antes ObtenerDatosCentral + GrabarCentral con el mensaje de cada servidor. Cualquier falla de la central (error
+     * del SP, sesión o conexión) se reporta con el mensaje de su área.
+     */
     private void saveCentral(CustomsArea area, int code) {
         CentralDataDTO data;
         try {
@@ -121,8 +127,12 @@ public class ComplementsServiceImpl implements ComplementsService {
             throw new RemoteServiceException(AppMessages.SIN_DATOS_CENTRAL, ex);
         }
         try {
-            psClient.saveCentral(area, code, SaveRules.central(area, data));
-        } catch (BusinessException ex) {
+            if (area.isClothing()) {
+                centersClient.saveClothing(SaveRules.clothingCentral(code, data));
+            } else {
+                centersClient.saveFurniture(SaveRules.furnitureCentral(code, data));
+            }
+        } catch (RuntimeException ex) {
             throw new RemoteServiceException(area.isClothing() ? AppMessages.ERROR_CENTRAL_ROPA
                 : AppMessages.ERROR_CENTRAL_MUEBLES, ex);
         }

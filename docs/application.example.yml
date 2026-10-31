@@ -18,6 +18,8 @@ app:
   custom-complements:
     # ps-im-customComplements con su context-path.
     ps-url: https://importacion-dev.coppel.io/ps/im/custom-complements/api
+    # ps-tms-fmd-inventarios-centrales (Central Muebles / Central Ropa); recibe el Authorization de la petición.
+    centrales-url: <url-de-ps-tms-fmd-inventarios-centrales>
     # "Hoy" de las validaciones de fechas (imagen de marca, avisos, NOM).
     time-zone: America/Tijuana
     # Tiempo máximo de cada llamada a ps (snapshot y commit ejecutan varios SP).

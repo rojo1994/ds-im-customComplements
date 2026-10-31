@@ -1,10 +1,10 @@
 package com.coppel.services.customcomplements.impl;
 
 import com.coppel.client.customcomplements.dto.CentralDataDTO;
-import com.coppel.client.customcomplements.dto.CentralSaveRequest;
+import com.coppel.client.customcomplements.dto.ClothingCentralRequest;
 import com.coppel.client.customcomplements.dto.CommitGeneralRequest;
+import com.coppel.client.customcomplements.dto.FurnitureCentralRequest;
 import com.coppel.constants.customcomplements.AppMessages;
-import com.coppel.constants.customcomplements.CustomsArea;
 import com.coppel.constants.customcomplements.ExpirationStatus;
 import com.coppel.dto.customcomplements.CustomsRowDTO;
 import com.coppel.dto.customcomplements.RegulationRowDTO;
@@ -113,28 +113,26 @@ final class SaveRules {
             .toList();
     }
 
-    /**
-     * Antes GrabarCentral. Muebles: aranceles y cuota × 100 como enteros. Ropa: el valor UMT sólo con unidad de tarifa
-     * 4 (si no, 0) y redondeado a 2 decimales.
-     */
-    static CentralSaveRequest central(CustomsArea area, CentralDataDTO data) {
-        if (area.isClothing()) {
-            BigDecimal tariffValue = data.tariffUnit() == CustomsRules.TARIFF_UNIT_SQUARE_METERS
-                ? data.tariffValue().setScale(2, RoundingMode.HALF_UP)
-                : BigDecimal.ZERO;
-            return new CentralSaveRequest(data.fraction(), data.frontierTariff(), data.interiorTariff(),
-                data.commercialUnit(), data.preferentialTariff(), data.producer(), data.producerType(),
-                data.preferentialCriterion(), "", false, BigDecimal.ZERO, tariffValue, data.appliesDecree(),
-                data.componentPieces(), data.weight(), data.usaFraction(), data.importBrand(), data.hasComponents(),
-                data.permitPrice(), data.nomKey(), data.complianceNom(), data.nomCertificate(), data.appliesNom(),
-                data.nomExpiration(), data.sanitaryNotice(), data.sanitaryNoticeExpiration(), data.labelingNom(),
-                data.under24Volts());
-        }
-        return new CentralSaveRequest(data.fraction(), times100(data.frontierTariff()), times100(data.interiorTariff()),
+    /** Antes GrabarCentral de Muebles: aranceles y cuota × 100 como enteros; el criterio preferencial va como bit. */
+    static FurnitureCentralRequest furnitureCentral(int code, CentralDataDTO data) {
+        return new FurnitureCentralRequest(code, text(data.fraction()), times100(data.frontierTariff()),
+            times100(data.interiorTariff()), data.commercialUnit(), data.preferentialTariff(), text(data.countryKey()),
+            data.tmec(), data.producer(), data.producerType(), data.preferentialCriterion() != 0,
+            times100(data.compensatoryQuota()).intValue());
+    }
+
+    /** Antes GrabarCentral de Ropa: el valor UMT sólo con unidad de tarifa 4 (si no, 0) y redondeado a 2 decimales. */
+    static ClothingCentralRequest clothingCentral(int code, CentralDataDTO data) {
+        BigDecimal tariffValue = data.tariffUnit() == CustomsRules.TARIFF_UNIT_SQUARE_METERS
+            ? data.tariffValue().setScale(2, RoundingMode.HALF_UP)
+            : BigDecimal.ZERO;
+        return new ClothingCentralRequest(code, text(data.fraction()), data.frontierTariff(), data.interiorTariff(),
             data.commercialUnit(), data.preferentialTariff(), data.producer(), data.producerType(),
-            data.preferentialCriterion(), data.countryKey(), data.tmec(), times100(data.compensatoryQuota()),
-            BigDecimal.ZERO, false, 0, BigDecimal.ZERO, "", 0, false, BigDecimal.ZERO, 0, 0, false, false, EMPTY_DATE,
-            "", EMPTY_DATE, 0, false);
+            data.preferentialCriterion(), tariffValue, data.appliesDecree(), data.componentPieces(), data.weight(),
+            text(data.usaFraction()), data.importBrand(), data.hasComponents(), data.permitPrice(), data.nomKey(),
+            data.complianceNom(), data.nomCertificate(), data.appliesNom(), dateOrEmpty(data.nomExpiration()),
+            data.sanitaryNotice() == null ? "" : data.sanitaryNotice(), dateOrEmpty(data.sanitaryNoticeExpiration()),
+            data.labelingNom(), data.under24Volts());
     }
 
     /** {@code Decimal.ToInt32(valor * 100)}: trunca. */
@@ -150,6 +148,10 @@ final class SaveRules {
     static Map<String, CustomsRowDTO> byKey(List<CustomsRowDTO> customs) {
         return customs.stream().collect(Collectors.toMap(row -> key(row.piece(), row.sizeRange()), Function.identity(),
             (first, second) -> second));
+    }
+
+    private static LocalDate dateOrEmpty(LocalDate date) {
+        return date == null ? EMPTY_DATE : date;
     }
 
     private static int value(Integer value) {

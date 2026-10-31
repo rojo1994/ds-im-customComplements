@@ -1,7 +1,7 @@
 package com.coppel.services.customcomplements.impl;
 
 import com.coppel.client.customcomplements.dto.CentralDataDTO;
-import com.coppel.client.customcomplements.dto.CentralSaveRequest;
+import com.coppel.client.customcomplements.dto.FurnitureCentralRequest;
 import com.coppel.client.customcomplements.dto.CommitGeneralRequest;
 import com.coppel.constants.customcomplements.AppMessages;
 import com.coppel.constants.customcomplements.CustomsArea;
@@ -65,17 +65,18 @@ class SaveRulesTest {
     @Test
     void furnitureCentralMultipliesBy100() {
         CentralDataDTO data = central(1);
-        CentralSaveRequest request = SaveRules.central(CustomsArea.MUEBLES, data);
+        FurnitureCentralRequest request = SaveRules.furnitureCentral(90001, data);
 
-        assertThat(request.frontierTariff()).isEqualByComparingTo("1550");
-        assertThat(request.compensatoryQuota()).isEqualByComparingTo("123");
-        assertThat(request.countryKey()).isEqualTo("CN");
+        assertThat(request.codigo()).isEqualTo(90001);
+        assertThat(request.arancelFrontera()).isEqualByComparingTo("1550");
+        assertThat(request.cuotaCompensatoria()).isEqualTo(123);
+        assertThat(request.clavePais()).isEqualTo("CN");
     }
 
     @Test
     void clothingCentralSendsTariffValueOnlyForUnit4() {
-        assertThat(SaveRules.central(CustomsArea.ROPA, central(4)).tariffValue()).isEqualByComparingTo("2.57");
-        assertThat(SaveRules.central(CustomsArea.ROPA, central(6)).tariffValue()).isEqualByComparingTo("0");
+        assertThat(SaveRules.clothingCentral(90001, central(4)).valorTarifa()).isEqualByComparingTo("2.57");
+        assertThat(SaveRules.clothingCentral(90001, central(6)).valorTarifa()).isEqualByComparingTo("0");
     }
 
     private static CentralDataDTO central(int tariffUnit) {
